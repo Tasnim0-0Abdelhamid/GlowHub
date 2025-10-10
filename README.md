@@ -11,4 +11,4 @@ GlowHub is an online store where users can browse products, search easily, add i
 8. As an admin, I want to add, edit, and delete products so I can manage the store.
 
 ## ERD
-![GlowHub ERD](FinalGlowHubERD
+![GlowHub ERD](FinalGlowHubERD)
