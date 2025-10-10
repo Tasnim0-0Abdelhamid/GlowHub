@@ -1,32 +1,23 @@
-from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.conf import settings
+import datetime
 
 # Create your models here.
-
-class CustomUser(AbstractUser):
-    ROLE_CHOICES = [
-        ('user', 'User'),
-        ('admin', 'Admin'),
-    ]
-
-    email = models.EmailField(unique=True)
-    phone_number = models.CharField(max_length=20, blank=True)
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+class User(models.Model):
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    email = models.EmailField(max_length=100)
+    password = models.CharField(max_length=100)
+    phone= models.CharField(max_length=20)
 
     def __str__(self):
-        return self.email
+        return f'{self.first_name} {self.last_name}'
     
 
 class Product(models.Model):
-    product_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=200)
-    description = models.TextField()
+    description = models.TextField(max_length=250, default='', blank=True, null= True)
     category = models.CharField(max_length=100)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(default=0, max_digits=10, decimal_places=2)
     stock_quantity = models.IntegerField()
     image = models.ImageField(upload_to='product/', null=True, blank=True)
 
@@ -35,14 +26,19 @@ class Product(models.Model):
     
 
 class Cart(models.Model):
-    cart_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='carts')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='carts')
+
+    def __str__(self):
+        return f"Cart of {self.user.email}"
+
 
 class CartItem(models.Model):
-    cart_item_id = models.AutoField(primary_key=True)
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField(default=1)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.quantity} x {self.product.name}"
 
 
 class Order(models.Model):
@@ -52,16 +48,13 @@ class Order(models.Model):
         ('canceled', 'Canceled')
     ]
 
-    order_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='orders')
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-
-class OrderItem(models.Model):
-    order_item_id = models.AutoField(primary_key=True)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+    address = models.CharField(max_length=100)
+    phone = models.CharField(max_length=20)
+    date = models.DateTimeField(default=datetime.datetime.today)
+    status = models.CharField()
+    
+    def __str__(self):
+        return self.product
