@@ -1,32 +1,57 @@
 from django.db import models
-import datetime
+from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.utils import timezone
 
-# Create your models here.
-class User(models.Model):
+
+class CustomUserManager(BaseUserManager):
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError("The Email field is required")
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        return self.create_user(email, password, **extra_fields)
+
+
+class CustomUser(AbstractUser):
+    username = None  
+    email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    email = models.EmailField(max_length=100)
-    password = models.CharField(max_length=100)
-    phone= models.CharField(max_length=20)
+    phone = models.CharField(max_length=20, blank=True, null=True)
+
+    USERNAME_FIELD = 'email' 
+    REQUIRED_FIELDS = [] 
+
+    objects = CustomUserManager()
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name}'
-    
+        return self.email
+
+
+
 
 class Product(models.Model):
     name = models.CharField(max_length=200)
-    description = models.TextField(max_length=250, default='', blank=True, null= True)
+    description = models.TextField(max_length=250, default='', blank=True, null=True)
     category = models.CharField(max_length=100)
     price = models.DecimalField(default=0, max_digits=10, decimal_places=2)
     stock_quantity = models.IntegerField()
-    image = models.ImageField(upload_to='product/', null=True, blank=True)
+    image = models.ImageField(upload_to='products/', null=True, blank=True)
 
     def __str__(self):
         return self.name
-    
+
+
 
 class Cart(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='carts')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='carts')
 
     def __str__(self):
         return f"Cart of {self.user.email}"
@@ -41,6 +66,7 @@ class CartItem(models.Model):
         return f"{self.quantity} x {self.product.name}"
 
 
+
 class Order(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),
@@ -48,13 +74,13 @@ class Order(models.Model):
         ('canceled', 'Canceled')
     ]
 
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
     address = models.CharField(max_length=100)
     phone = models.CharField(max_length=20)
-    date = models.DateTimeField(default=datetime.datetime.today)
-    status = models.CharField()
-    
+    date = models.DateTimeField(default=timezone.now)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+
     def __str__(self):
-        return self.product
+        return f"Order #{self.id} - {self.product.name} ({self.user.email})"
