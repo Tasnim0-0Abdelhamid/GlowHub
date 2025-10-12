@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm, EmailLoginForm
 from django.contrib import messages
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from .models import Product
 
 # Create your views here.
@@ -26,12 +27,21 @@ def signup_view(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            login(request, user)
             messages.success(request, 'Account created successfully.')
-            return redirect('login')
+            return redirect('profile')
     else:
         form = CustomUserCreationForm() 
 
     return render(request, 'signup.html', {'form': form})
 
 # -----------------------------------------------
+
+@login_required
+def profile_view(request):
+    return render(request, 'profile.html')
+
+def logout_view(request):
+    logout(request)
+    return redirect('home')

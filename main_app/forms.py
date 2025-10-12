@@ -17,9 +17,9 @@ class EmailLoginForm(AuthenticationForm):
         if email and password:
             user = authenticate(username=email, password=password)
             if user is None:
-                raise forms.ValidationError(
-                    "Invalid email or password.", code='invalid_login'
-                )
+                raise forms.ValidationError("Invalid email or password.", code='invalid_login')
+            if not user.is_active:
+                raise forms.ValidationError("This account is inactive.", code='inactive')
             self.user_cache = user
         return self.cleaned_data
     
@@ -29,9 +29,3 @@ class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
         fields = ('email', 'first_name', 'last_name', 'phone')
-
-        error_messages = {
-        'invalid_login': "Invalid email or password.",
-        'inactive': "This account is inactive.",
-    }
-
