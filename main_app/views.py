@@ -7,11 +7,6 @@ from .models import Product
 
 # Create your views here.
 
-
-def home(request):
-    products = Product.objects.all()
-    return render(request, 'home.html', {'products': products}) 
-
 def login_view(request):
     if request.method == 'POST':
         form = EmailLoginForm(request, data=request.POST)
@@ -71,6 +66,28 @@ def profile_view(request):
         'show_delete_confirm': show_delete_confirm 
     })
 
+def home(request):
+    query = request.GET.get('q')
+    category = request.GET.get('category')
+
+    products = Product.objects.all()
+    categories = Product.objects.values_list('category', flat=True).distinct()
+
+    if query:
+        products = products.filter(name__icontains=query)
+
+    if category and category != 'all':
+        products = products.filter(category__iexact=category)
+
+    return render(request, 'home.html', {
+        'products': products,
+        'categories': categories,
+        'selected_category': category or 'all',
+        'query': query or '',
+    })
+
 def logout_view(request):
     logout(request)
     return redirect('home')
+
+
