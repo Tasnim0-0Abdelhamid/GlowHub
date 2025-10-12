@@ -29,3 +29,16 @@ class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
         fields = ('email', 'first_name', 'last_name', 'phone')
+
+
+class CustomUserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['first_name', 'last_name', 'email', 'phone']
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        user_qs = CustomUser.objects.filter(email=email).exclude(pk=self.instance.pk)
+        if user_qs.exists():
+            raise forms.ValidationError("This email is already in use by another account.")
+        return email

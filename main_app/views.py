@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .forms import CustomUserCreationForm, EmailLoginForm
+from .forms import CustomUserCreationForm, EmailLoginForm, CustomUserUpdateForm
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from .models import Product
@@ -40,7 +40,26 @@ def signup_view(request):
 
 @login_required
 def profile_view(request):
-    return render(request, 'profile.html')
+    user = request.user
+    show_form = False
+    form = CustomUserUpdateForm(instance=user)
+
+    if request.method == 'POST' and 'show_edit_form' in request.POST:
+        show_form = True
+    elif request.method == 'POST' and 'edit_profile' in request.POST:
+        if 'edit_profile' in request.POST:
+            form = CustomUserUpdateForm(request.POST, instance=user)
+            show_form = True
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Profile updated successfully.")
+                return redirect('profile')
+    
+    return render(request, 'profile.html', {
+        'user': user,
+        'form': form,
+        'show_form': show_form
+    })
 
 def logout_view(request):
     logout(request)

@@ -1,6 +1,34 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<h2>Welcome, {{ user.first_name }} {{ user.last_name }}!</h2>
+<h2>Profile</h2>
+<p>First Name: {{ user.first_name }}</p>
+<p>Last Name: {{ user.last_name }}</p>
 <p>Email: {{ user.email }}</p>
-<p>Joined: {{ user.date_joined|date:"F j, Y" }}</p>
+<p>Phone: {{ user.phone|default:"Not provided" }}</p>
+
+{% if not show_form %}
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit" name="show_edit_form">Edit Profile</button>
+</form>
+{% endif %}
+
+{% if show_form %}
+<h3>Edit Profile</h3>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" name="edit_profile">Save Changes</button>
+</form>
+{% endif %}
+
+{% if messages %}
+<ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
 {% endblock %}
