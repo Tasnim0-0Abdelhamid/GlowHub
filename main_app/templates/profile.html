@@ -14,12 +14,31 @@
 </form>
 {% endif %}
 
+{% if not show_delete_confirm %}
+<form method="POST" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" name="show_delete_confirm">Delete Account</button>
+</form>
+{% endif %}
+
 {% if show_form %}
 <h3>Edit Profile</h3>
 <form method="POST">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit" name="edit_profile">Save Changes</button>
+</form>
+{% endif %}
+
+{% if show_delete_confirm %}
+<h3>Confirm Delete</h3>
+<p>Are you sure you want to delete your account? This action cannot be undone.</p>
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit" name="delete_account">Yes, delete my account</button>
+</form>
+<form method="GET" action="{% url 'profile' %}">
+    <button type="submit">Cancel</button>
 </form>
 {% endif %}
 

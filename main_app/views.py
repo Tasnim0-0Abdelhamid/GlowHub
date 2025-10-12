@@ -42,6 +42,7 @@ def signup_view(request):
 def profile_view(request):
     user = request.user
     show_form = False
+    show_delete_confirm = False
     form = CustomUserUpdateForm(instance=user)
 
     if request.method == 'POST' and 'show_edit_form' in request.POST:
@@ -54,11 +55,20 @@ def profile_view(request):
                 form.save()
                 messages.success(request, "Profile updated successfully.")
                 return redirect('profile')
+            
+    elif request.method == 'POST' and 'show_delete_confirm' in request.POST:
+        show_delete_confirm = True
+
+    elif request.method == 'POST' and 'delete_account' in request.POST:
+        user.delete()
+        messages.success(request, "Account deleted successfully.")
+        return redirect('home')
     
     return render(request, 'profile.html', {
         'user': user,
         'form': form,
-        'show_form': show_form
+        'show_form': show_form,
+        'show_delete_confirm': show_delete_confirm 
     })
 
 def logout_view(request):
