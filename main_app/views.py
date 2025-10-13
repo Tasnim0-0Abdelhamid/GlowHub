@@ -1,9 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm, EmailLoginForm, CustomUserUpdateForm
 from django.contrib import messages
-from django.contrib.auth import login, logout
-from .models import Product
+from django.contrib.auth import login, logout, get_user_model
+from .models import Product, Cart, CartItem
 
 # Create your views here.
 
@@ -90,4 +90,36 @@ def logout_view(request):
     logout(request)
     return redirect('home')
 
+#-------------------------------------------
+
+
+def add_to_cart(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+
+    if request.user.is_authenticated:
+        cart, _ = Cart.objects.get_or_create(user=request.user)
+        item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+        if not created:
+            item.quantity += 1
+            item.save()
+    else:
+        cart = request.session.get('cart', {})
+        cart[str(product_id)] = cart.get(str(product_id), 0) + 1
+        request.session['cart'] = cart
+
+    messages.success(request, f"{product.name} added to your cart.", extra_tags='cart')
+    return redirect('home')
+
+def cart_view(request):
+    if request.user.is_authenticated:
+        cart, _ = Cart.objects.get_or_create(user=request.user)
+        items = cart.items.all()
+    else:
+        session_cart = request.session.get('cart', {})
+        items = []
+        for product_id, quantity in session_cart.items():
+            product = Product.objects.get(id=product_id)
+            items.append({'product': product, 'quantity': quantity})
+
+    return render(request, 'cart.html', {'items': items})
 

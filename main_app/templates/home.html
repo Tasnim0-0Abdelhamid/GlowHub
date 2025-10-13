@@ -22,6 +22,12 @@
             {% endif %}
             <h3>{{ product.name }}</h3>
             <p class="price">${{ product.price }}</p>
+
+            <form method="POST" action="{% url 'add_to_cart' product.id %}">
+                {% csrf_token %}
+                <button type="submit">Add to Cart</button>
+            </form>
+            
             <div class="product-details">
                 <p>{{ product.description }}</p>
                 <p>Category: {{ product.category }}</p>

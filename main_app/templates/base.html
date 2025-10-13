@@ -19,14 +19,38 @@
                 {% else %}
                     <a href="{% url 'login' %}">Login/Signup</a>
                 {% endif %}
-                <a href="#!">Cart</a>
+
+                {% if user.is_authenticated %}
+                    {% with cart=user.carts.first %}
+                        {% if cart %}
+                            {% with cart.items.count as cart_count %}
+                                <a href="{% url 'cart' %}">Cart ({{ cart_count }})</a>
+                            {% endwith %}
+                        {% else %}
+                            <a href="{% url 'cart' %}">Cart (0)</a>
+                        {% endif %}
+                    {% endwith %}
+                {% else %}
+                    {% with request.session.cart|length as cart_count %}
+                        <a href="{% url 'cart' %}">Cart ({{ cart_count|default:0 }})</a>
+                    {% endwith %}
+                {% endif %}
             </div>
         </div>
     </nav>
 
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          {% if 'cart' in message.tags %}
+            <li>{{ message }}</li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    {% endif %}
+
     <main class="content">
-        {% block content %}
-        {% endblock %}
+        {% block content %}{% endblock %}
     </main>
 
     <footer>
