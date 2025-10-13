@@ -111,15 +111,64 @@ def add_to_cart(request, product_id):
     return redirect('home')
 
 def cart_view(request):
+    items = []
+    total = 0
+
     if request.user.is_authenticated:
         cart, _ = Cart.objects.get_or_create(user=request.user)
-        items = cart.items.all()
+        for item in cart.items.all():
+            items.append({
+                'product': item.product,
+                'quantity': item.quantity
+            })
+            total += item.quantity * item.product.price
     else:
         session_cart = request.session.get('cart', {})
-        items = []
         for product_id, quantity in session_cart.items():
-            product = Product.objects.get(id=product_id)
-            items.append({'product': product, 'quantity': quantity})
+            product = get_object_or_404(Product, id=product_id)
+            items.append({
+                'product': product,
+                'quantity': quantity
+            })
+            total += quantity * product.price
 
-    return render(request, 'cart.html', {'items': items})
+    return render(request, 'cart.html', {'items': items, 'total': total})
 
+
+def update_cart(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+
+    if request.user.is_authenticated:
+        cart, _ = Cart.objects.get_or_create(user=request.user)
+        item, _ = CartItem.objects.get_or_create(cart=cart, product=product)
+        if request.method == "POST":
+            action = request.POST.get('action')
+            if action == "increment":
+                item.quantity += 1
+                item.save()
+            elif action == "decrement":
+                if item.quantity > 1:
+                    item.quantity -= 1
+                    item.save()
+                else:
+                    item.delete()
+            elif action == "remove":
+                item.delete()
+    else:
+
+        session_cart = request.session.get('cart', {})
+        if request.method == "POST":
+            action = request.POST.get('action')
+            pid_str = str(product_id)
+            if action == "increment":
+                session_cart[pid_str] = session_cart.get(pid_str, 0) + 1
+            elif action == "decrement":
+                if session_cart.get(pid_str, 0) > 1:
+                    session_cart[pid_str] -= 1
+                else:
+                    session_cart.pop(pid_str, None)
+            elif action == "remove":
+                session_cart.pop(pid_str, None)
+            request.session['cart'] = session_cart
+
+    return redirect('cart')

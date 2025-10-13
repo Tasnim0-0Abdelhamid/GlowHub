@@ -1,16 +1,53 @@
 {% extends 'base.html' %}
+
 {% block content %}
 <h2>Your Cart</h2>
 
 {% if items %}
-  <ul>
-    {% for item in items %}
-      <li>{{ item.product.name }} - Quantity: {{ item.quantity }}</li>
-    {% endfor %}
-  </ul>
-  <a href="{% url 'home' %}">Continue Shopping</a>
+<table>
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Image</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in items %}
+        <tr>
+            <td>{{ item.product.name }}</td>
+            <td>
+                {% if item.product.image %}
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="width:80px; height:auto;">
+                {% else %}
+                    No Image
+                {% endif %}
+            </td>
+            <td>${{ item.product.price }}</td>
+            <td>
+                <form method="POST" action="{% url 'update_cart' item.product.id %}">
+                    {% csrf_token %}
+                    <button type="submit" name="action" value="decrement">-</button>
+                    <span>{{ item.quantity }}</span>
+                    <button type="submit" name="action" value="increment">+</button>
+                </form>
+            </td>
+            <td>
+                <form method="POST" action="{% url 'update_cart' item.product.id %}">
+                    {% csrf_token %}
+                    <button type="submit" name="action" value="remove">Remove</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3>Total: ${{ total }}</h3>
+
 {% else %}
-  <p>Your cart is empty.</p>
-  <a href="{% url 'home' %}">Go Shopping</a>
+<p>Your cart is empty.</p>
 {% endif %}
 {% endblock %}
