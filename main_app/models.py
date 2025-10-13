@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils import timezone
 
@@ -49,7 +50,7 @@ class Product(models.Model):
         return self.name
 
 
-
+User = get_user_model()
 class Cart(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='carts')
 
@@ -67,20 +68,35 @@ class CartItem(models.Model):
 
 
 
+
 class Order(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('completed', 'Completed'),
-        ('canceled', 'Canceled')
+        ('canceled', 'Canceled'),
     ]
 
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField(default=1)
-    address = models.CharField(max_length=100)
+    address = models.CharField(max_length=200)
     phone = models.CharField(max_length=20)
     date = models.DateTimeField(default=timezone.now)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
 
     def __str__(self):
-        return f"Order #{self.id} - {self.product.name} ({self.user.email})"
+        return f"Order #{self.id} ({self.user.email})"
+
+    def total_price(self):
+        return sum(item.subtotal for item in self.items.all())
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.quantity} x {self.product.name}"
+
+    @property
+    def subtotal(self):
+        return self.quantity * self.product.price

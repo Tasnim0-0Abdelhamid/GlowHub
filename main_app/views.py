@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm, EmailLoginForm, CustomUserUpdateForm
 from django.contrib import messages
 from django.contrib.auth import login, logout, get_user_model
-from .models import Product, Cart, CartItem
+from .models import Product, Cart, CartItem, Order, OrderItem
 
 # Create your views here.
 
@@ -172,3 +172,45 @@ def update_cart(request, product_id):
             request.session['cart'] = session_cart
 
     return redirect('cart')
+
+
+@login_required
+def checkout(request):
+    cart = Cart.objects.filter(user=request.user).first()
+    if not cart or not cart.items.exists():
+        messages.warning(request, "Your cart is empty.")
+        return redirect('cart_view') 
+
+    if request.method == "POST":
+        address = request.POST.get("address")
+        phone = request.POST.get("phone")
+
+        if not address or not phone:
+            messages.error(request, "Please fill in all fields.")
+            return redirect('checkout')
+
+        order = Order.objects.create(
+            user=request.user,
+            address=address,
+            phone=phone,
+        )
+
+        for item in cart.items.all():
+            OrderItem.objects.create(
+                order=order,
+                product=item.product,
+                quantity=item.quantity
+            )
+
+        cart.items.all().delete()
+
+        messages.success(request, "Your order has been placed successfully!")
+        return redirect('order_success', order_id=order.id)
+
+    total = sum(item.product.price * item.quantity for item in cart.items.all())
+    return render(request, 'checkout.html', {'cart': cart, 'total': total})
+
+@login_required
+def order_success(request, order_id):
+    order = Order.objects.get(id=order_id, user=request.user)
+    return render(request, 'order_success.html', {'order': order})
