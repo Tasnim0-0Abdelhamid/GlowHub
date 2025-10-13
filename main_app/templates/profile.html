@@ -7,6 +7,8 @@
 <p>Email: {{ user.email }}</p>
 <p>Phone: {{ user.phone|default:"Not provided" }}</p>
 
+<p><a href="{% url 'orders' %}">My Orders</a></p>
+
 {% if not show_form %}
 <form method="POST">
     {% csrf_token %}

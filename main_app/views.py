@@ -214,3 +214,8 @@ def checkout(request):
 def order_success(request, order_id):
     order = Order.objects.get(id=order_id, user=request.user)
     return render(request, 'order_success.html', {'order': order})
+
+@login_required
+def orders_view(request):
+    orders = Order.objects.filter(user=request.user).order_by('-date')
+    return render(request, 'my_orders.html', {'orders': orders})
