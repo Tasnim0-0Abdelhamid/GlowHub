@@ -3,7 +3,7 @@
 {% block title %}Login - GlowHub{% endblock %}
 
 {% block content %}
-<div class="login-container">
+<div>
     <h2>Login</h2>
     
     {% if messages %}
@@ -14,7 +14,7 @@
         </ul>
     {% endif %}
 
-    <form method="post" class="login-form">
+    <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Login</button>

@@ -12,7 +12,22 @@ def login_view(request):
     if request.method == 'POST':
         form = EmailLoginForm(request, data=request.POST)
         if form.is_valid():
-            login(request, form.get_user())
+            user = form.get_user()
+            login(request, user)
+
+            session_cart = request.session.get('cart', {})
+            if session_cart:
+                cart, _ = Cart.objects.get_or_create(user=user)
+                for product_id, quantity in session_cart.items():
+                    product = Product.objects.get(id=product_id)
+                    item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+                    if not created:
+                        item.quantity += quantity
+                    else:
+                        item.quantity = quantity
+                    item.save()
+                request.session['cart'] = {}
+
             return redirect('home')
     else:
         form = EmailLoginForm()
@@ -25,12 +40,31 @@ def signup_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
+
+            session_cart = request.session.get('cart', {})
+            if session_cart:
+                cart, _ = Cart.objects.get_or_create(user=user)
+                for product_id, quantity in session_cart.items():
+                    product = Product.objects.get(id=product_id)
+                    item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+                    if not created:
+                        item.quantity += quantity
+                    else:
+                        item.quantity = quantity
+                    item.save()
+                request.session['cart'] = {}
+
             messages.success(request, 'Account created successfully.')
             return redirect('profile')
     else:
-        form = CustomUserCreationForm() 
-
+        form = CustomUserCreationForm()
     return render(request, 'signup.html', {'form': form})
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('home')
+
 
 # -----------------------------------------------
 
@@ -87,9 +121,9 @@ def home(request):
         'query': query or '',
     })
 
-def logout_view(request):
-    logout(request)
-    return redirect('home')
+def product_detail(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    return render(request, 'product_detail.html', {'product': product})
 
 #-------------------------------------------
 
