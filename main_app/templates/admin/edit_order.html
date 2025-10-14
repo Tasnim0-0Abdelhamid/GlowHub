@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Edit Order #{{ order.id }}</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    <label>Status:</label><br>
+    <select name="status">
+        <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
+        <option value="in_transit" {% if order.status == 'in_transit' %}selected{% endif %}>In Transit</option>
+        <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>Delivered</option>
+        <option value="completed" {% if order.status == 'completed' %}selected{% endif %}>Completed</option>
+        <option value="canceled" {% if order.status == 'canceled' %}selected{% endif %}>Canceled</option>
+    </select><br><br>
+
+    <button type="submit">Update Order</button>
+</form>
+{% endblock %}

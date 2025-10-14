@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm, EmailLoginForm, CustomUserUpdateForm
 from django.contrib import messages
-from django.contrib.auth import login, logout, get_user_model
-from .models import Product, Cart, CartItem, Order, OrderItem
+from django.contrib.auth import login, logout
+from .models import Product, Cart, CartItem, Order, OrderItem, CustomUser
+from django.contrib.admin.views.decorators import staff_member_required
 
 # Create your views here.
 
@@ -219,3 +220,136 @@ def order_success(request, order_id):
 def orders_view(request):
     orders = Order.objects.filter(user=request.user).order_by('-date')
     return render(request, 'my_orders.html', {'orders': orders})
+
+#------------------------------------------------------------------
+
+@staff_member_required
+def admin_dashboard(request):
+    total_users = CustomUser.objects.count()
+    total_products = Product.objects.count()
+    total_orders = Order.objects.count()
+    pending_orders = Order.objects.filter(status='pending').count()
+    in_transit_orders = Order.objects.filter(status='in_transit').count()
+    delivered_orders = Order.objects.filter(status='delivered').count()
+    completed_orders = Order.objects.filter(status='completed').count()
+
+    context = {
+        'total_users': total_users,
+        'total_products': total_products,
+        'total_orders': total_orders,
+        'pending_orders': pending_orders,
+        'in_transit_orders': in_transit_orders,
+        'delivered_orders': delivered_orders,
+        'completed_orders': completed_orders,
+    }
+    return render(request, 'admin/admin_dashboard.html', context)
+
+@staff_member_required
+def manage_products(request):
+    products = Product.objects.all()
+    query = request.GET.get('q', '')
+    if query:
+        products = products.filter(name__icontains=query)  # فلترة حسب الاسم
+    categories = Product.objects.values_list('category', flat=True).distinct()
+    selected_category = request.GET.get('category', 'all')
+    if selected_category != 'all':
+        products = products.filter(category__iexact=selected_category)
+    context = {
+        'products': products,
+        'query': query,
+        'categories': categories,
+        'selected_category': selected_category,
+    }
+    return render(request, 'admin/manage_products.html', context)
+
+@staff_member_required
+def add_product(request):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        category = request.POST.get("category")
+        description = request.POST.get("description")
+        price = request.POST.get("price")
+        stock = request.POST.get("stock_quantity")
+        image = request.FILES.get("image")
+
+        Product.objects.create(
+            name=name,
+            category=category,
+            description=description,
+            price=price,
+            stock_quantity=stock,
+            image=image
+        )
+        messages.success(request, "Product added successfully!")
+        return redirect('manage_products')
+
+    return render(request, 'admin/add_product.html')
+
+
+@staff_member_required
+def edit_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+
+    if request.method == "POST":
+        product.name = request.POST.get("name")
+        product.category = request.POST.get("category")
+        product.description = request.POST.get("description")
+        product.price = request.POST.get("price")
+        product.stock_quantity = request.POST.get("stock_quantity")
+        image = request.FILES.get("image")
+        if image: 
+            product.image = image
+
+        product.save()
+        messages.success(request, "Product updated successfully!")
+        return redirect('manage_products')
+
+    return render(request, 'admin/edit_product.html', {'product': product})
+
+
+@staff_member_required
+def delete_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    product.delete()
+    messages.success(request, "Product deleted successfully!")
+    return redirect('manage_products')
+
+@staff_member_required
+def manage_orders(request):
+    orders = Order.objects.all().select_related('user')
+    query = request.GET.get('q', '')
+    if query:
+        orders = orders.filter(id__icontains=query)
+    
+    status_choices = [choice[0] for choice in Order.STATUS_CHOICES] 
+    selected_status = request.GET.get('status', 'all')
+    if selected_status != 'all':
+        orders = orders.filter(status=selected_status)
+
+    context = {
+        'orders': orders,
+        'query': query,
+        'status': status_choices,
+        'selected_status': selected_status,
+    }
+
+    return render(request, 'admin/manage_orders.html', context)
+
+@staff_member_required
+def edit_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+
+    if request.method == "POST":
+        order.status = request.POST.get("status")
+        order.save()
+        messages.success(request, "Order updated successfully!")
+        return redirect('manage_orders')
+
+    return render(request, 'admin/edit_order.html', {'order': order})
+
+@staff_member_required
+def delete_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    order.delete()
+    messages.success(request, "Order deleted successfully!")
+    return redirect('manage_orders')
