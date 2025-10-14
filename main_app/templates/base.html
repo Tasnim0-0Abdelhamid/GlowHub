@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}GlowHub{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
+    {% block extra_head %}{% endblock %}
 </head>
 <body>
 
@@ -45,13 +46,11 @@
     </nav>
 
     {% if messages %}
-      <ul class="messages">
-        {% for message in messages %}
-          {% if 'cart' in message.tags %}
-            <li>{{ message }}</li>
-          {% endif %}
-        {% endfor %}
-      </ul>
+        <ul class="messages">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
     {% endif %}
 
     <main class="content">
@@ -62,5 +61,6 @@
         <p>© 2025 GlowHub. All rights reserved.</p>
     </footer>
 
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

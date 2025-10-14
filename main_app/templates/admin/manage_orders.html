@@ -1,48 +1,56 @@
 {% extends 'base.html' %}
 
+{% block title %}Manage Orders | GlowHub{% endblock %}
+
 {% block content %}
-<h2>Manage Orders</h2>
+<div class="checkout-form">
+    <h2>Manage Orders</h2>
 
-<form method="GET" action="{% url 'manage_orders' %}">
-    <input type="text" name="q" placeholder="Search by id..." value="{{ query }}">
-    
-    <select name="status" onchange="this.form.submit()">
-        <option value="all" {% if selected_status == 'all' %}selected{% endif %}>All Status</option>
-        {% for cat in status %}
-            <option value="{{ cat }}" {% if cat == selected_status %}selected{% endif %}>{{ cat }}</option>
-        {% endfor %}
-    </select>
+    <form method="GET" action="{% url 'manage_orders' %}">
+        <input type="text" name="q" placeholder="Search by ID..." value="{{ query }}">
+        
+        <select name="status" onchange="this.form.submit()">
+            <option value="all" {% if selected_status == 'all' %}selected{% endif %}>All Status</option>
+            {% for s in status %}
+                <option value="{{ s }}" {% if s == selected_status %}selected{% endif %}>{{ s|capfirst }}</option>
+            {% endfor %}
+        </select>
 
-    <button type="submit">Search</button>
-</form>
+        <button type="submit" class="btn">Search</button>
+    </form>
 
-<table>
-    <thead>
-        <tr>
-            <th>Order ID</th>
-            <th>User</th>
-            <th>Date</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for order in orders %}
-        <tr>
-            <td>{{ order.id }}</td>
-            <td>{{ order.user.email }}</td>
-            <td>{{ order.date }}</td>
-            <td>{{ order.status }}</td>
-            <td>
-                <a href="{% url 'edit_order' order.id %}">Edit</a>
-                <a href="{% url 'delete_order' order.id %}">Delete</a>
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="5">No orders available.</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>User</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.user.email }}</td>
+                <td>{{ order.date }}</td>
+                <td>{{ order.status|capfirst }}</td>
+                <td>
+                    <a href="{% url 'edit_order' order.id %}" class="btn">Edit</a>
+                    <a href="{% url 'delete_order' order.id %}" class="btn">Delete</a>
+                </td>
+                
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No orders available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <br>
+    <a href="{% url 'admin_dashboard' %}">&larr; Back to Dashboard</a>
+</div>
 {% endblock %}

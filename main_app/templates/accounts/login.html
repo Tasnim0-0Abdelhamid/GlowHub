@@ -3,9 +3,9 @@
 {% block title %}Login - GlowHub{% endblock %}
 
 {% block content %}
-<div>
+<div class="login-container">
     <h2>Login</h2>
-    
+
     {% if messages %}
         <ul class="messages">
         {% for message in messages %}
@@ -17,9 +17,9 @@
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Login</button>
+        <button type="submit" class="btn">Login</button>
     </form>
-    
+
     <p>Don't have an account? <a href="{% url 'signup' %}">Sign up</a></p>
 </div>
 {% endblock %}

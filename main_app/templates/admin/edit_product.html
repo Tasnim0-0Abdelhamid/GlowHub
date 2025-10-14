@@ -1,32 +1,40 @@
 {% extends 'base.html' %}
 
+{% block title %}Edit Product - {{ product.name }} | GlowHub{% endblock %}
+
 {% block content %}
-<h2>Edit Product</h2>
+<div class="checkout-form">
+    <h2>Edit Product</h2>
 
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <label>Name:</label><br>
-    <input type="text" name="name" value="{{ product.name }}"><br><br>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
 
-    <label>Category:</label><br>
-    <input type="text" name="category" value="{{ product.category }}"><br><br>
+        <label>Name:</label>
+        <input type="text" name="name" value="{{ product.name }}">
 
-    <label>Description:</label><br>
-    <textarea name="description" rows="4">{{ product.description }}</textarea><br><br>
+        <label>Category:</label>
+        <input type="text" name="category" value="{{ product.category }}">
 
-    <label>Price:</label><br>
-    <input type="number" step="0.01" name="price" value="{{ product.price }}"><br><br>
+        <label>Description:</label>
+        <textarea name="description" rows="4">{{ product.description }}</textarea>
 
-    <label>Stock Quantity:</label><br>
-    <input type="number" name="stock_quantity" value="{{ product.stock_quantity }}"><br><br>
+        <label>Price:</label>
+        <input type="number" step="0.01" name="price" value="{{ product.price }}">
 
-    <label>Image:</label><br>
-    {% if product.image %}
-        <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width:100px;"><br>
-    {% endif %}
-    <input type="file" name="image" accept="image/*"><br><br>
+        <label>Stock Quantity:</label>
+        <input type="number" name="stock_quantity" value="{{ product.stock_quantity }}">
 
+        <label>Image:</label>
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width:100px; border-radius:8px;"><br>
+        {% endif %}
+        <input type="file" name="image" accept="image/*">
 
-    <button type="submit">Update Product</button>
-</form>
+        <br>
+        <button type="submit" class="btn">Update Product</button>
+    </form>
+
+    <br>
+    <a href="{% url 'manage_products' %}">&larr; Back to Products</a>
+</div>
 {% endblock %}

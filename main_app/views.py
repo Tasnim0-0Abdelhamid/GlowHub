@@ -31,7 +31,7 @@ def login_view(request):
             return redirect('home')
     else:
         form = EmailLoginForm()
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'accounts/login.html', {'form': form})
 
 
 def signup_view(request):
@@ -58,7 +58,7 @@ def signup_view(request):
             return redirect('profile')
     else:
         form = CustomUserCreationForm()
-    return render(request, 'signup.html', {'form': form})
+    return render(request, 'accounts/signup.html', {'form': form})
 
 
 def logout_view(request):
@@ -94,7 +94,7 @@ def profile_view(request):
         messages.success(request, "Account deleted successfully.")
         return redirect('home')
     
-    return render(request, 'profile.html', {
+    return render(request, 'accounts/profile.html', {
         'user': user,
         'form': form,
         'show_form': show_form,
@@ -167,7 +167,7 @@ def cart_view(request):
             })
             total += quantity * product.price
 
-    return render(request, 'cart.html', {'items': items, 'total': total})
+    return render(request, 'cart-order/cart.html', {'items': items, 'total': total})
 
 
 def update_cart(request, product_id):
@@ -243,17 +243,17 @@ def checkout(request):
         return redirect('order_success', order_id=order.id)
 
     total = sum(item.product.price * item.quantity for item in cart.items.all())
-    return render(request, 'checkout.html', {'cart': cart, 'total': total})
+    return render(request, 'cart-order/checkout.html', {'cart': cart, 'total': total})
 
 @login_required
 def order_success(request, order_id):
     order = Order.objects.get(id=order_id, user=request.user)
-    return render(request, 'order_success.html', {'order': order})
+    return render(request, 'cart-order/order_success.html', {'order': order})
 
 @login_required
 def orders_view(request):
     orders = Order.objects.filter(user=request.user).order_by('-date')
-    return render(request, 'my_orders.html', {'orders': orders})
+    return render(request, 'accounts/my_orders.html', {'orders': orders})
 
 #------------------------------------------------------------------
 

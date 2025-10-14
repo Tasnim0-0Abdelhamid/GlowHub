@@ -1,19 +1,27 @@
 {% extends 'base.html' %}
 
+{% block title %}Edit Order #{{ order.id }} - GlowHub{% endblock %}
+
 {% block content %}
-<h2>Edit Order #{{ order.id }}</h2>
+<div class="checkout-form">
+    <h2>Edit Order #{{ order.id }}</h2>
 
-<form method="POST">
-    {% csrf_token %}
-    <label>Status:</label><br>
-    <select name="status">
-        <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
-        <option value="in_transit" {% if order.status == 'in_transit' %}selected{% endif %}>In Transit</option>
-        <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>Delivered</option>
-        <option value="completed" {% if order.status == 'completed' %}selected{% endif %}>Completed</option>
-        <option value="canceled" {% if order.status == 'canceled' %}selected{% endif %}>Canceled</option>
-    </select><br><br>
+    <form method="POST">
+        {% csrf_token %}
+        <label>Status:</label>
+        <select name="status">
+            <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
+            <option value="in_transit" {% if order.status == 'in_transit' %}selected{% endif %}>In Transit</option>
+            <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>Delivered</option>
+            <option value="completed" {% if order.status == 'completed' %}selected{% endif %}>Completed</option>
+            <option value="canceled" {% if order.status == 'canceled' %}selected{% endif %}>Canceled</option>
+        </select>
 
-    <button type="submit">Update Order</button>
-</form>
+        <br><br>
+        <button type="submit" class="btn">Update Order</button>
+    </form>
+
+    <br>
+    <a href="{% url 'manage_orders' %}">&larr; Back to Orders</a>
+</div>
 {% endblock %}

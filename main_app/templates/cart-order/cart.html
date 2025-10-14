@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% block title %}Your Cart | GlowHub{% endblock %}
+
 {% block content %}
 <h2>Your Cart</h2>
 
@@ -20,24 +22,24 @@
             <td>{{ item.product.name }}</td>
             <td>
                 {% if item.product.image %}
-                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="width:80px; height:auto;">
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="width:80px; height:auto; border-radius:8px;">
                 {% else %}
                     No Image
                 {% endif %}
             </td>
             <td>${{ item.product.price }}</td>
             <td>
-                <form method="POST" action="{% url 'update_cart' item.product.id %}">
+                <form method="POST" action="{% url 'update_cart' item.product.id %}" style="display:flex; align-items:center; gap:0.3rem;">
                     {% csrf_token %}
-                    <button type="submit" name="action" value="decrement">-</button>
+                    <button type="submit" name="action" value="decrement" class="btn">-</button>
                     <span>{{ item.quantity }}</span>
-                    <button type="submit" name="action" value="increment">+</button>
+                    <button type="submit" name="action" value="increment" class="btn">+</button>
                 </form>
             </td>
             <td>
                 <form method="POST" action="{% url 'update_cart' item.product.id %}">
                     {% csrf_token %}
-                    <button type="submit" name="action" value="remove">Remove</button>
+                    <button type="submit" name="action" value="remove" class="btn">Remove</button>
                 </form>
             </td>
         </tr>
@@ -47,9 +49,7 @@
 
 <h3>Total: ${{ total }}</h3>
 
-<a href="{% url 'checkout' %}" class="btn btn-success" >
-    Proceed to Checkout
-</a>
+<a href="{% url 'checkout' %}" class="btn">Proceed to Checkout</a>
 
 {% else %}
 <p>Your cart is empty.</p>

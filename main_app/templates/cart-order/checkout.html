@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout | GlowHub{% endblock %}
+
+{% block content %}
+<h2>Checkout</h2>
+
+<form method="POST" class="checkout-form">
+    {% csrf_token %}
+
+    <label for="address">Address:</label>
+    <input type="text" id="address" name="address" required placeholder="Enter your address">
+
+    <label for="phone">Phone:</label>
+    <input type="text" id="phone" name="phone" required placeholder="Enter your phone number">
+
+    <h3>Order Summary</h3>
+    <ul>
+        {% for item in cart.items.all %}
+        <li>{{ item.product.name }} - {{ item.quantity }} × ${{ item.product.price }}</li>
+        {% endfor %}
+    </ul>
+
+    <p><strong>Total:</strong> ${{ total }}</p>
+
+    <button type="submit" class="btn">Place Order</button>
+</form>
+{% endblock %}

@@ -1,28 +1,41 @@
 {% extends 'base.html' %}
 
+{% block title %}Add Product - GlowHub{% endblock %}
+
 {% block content %}
-<h2>Add Product</h2>
+<div class="checkout-form">
+    <h2>Add Product</h2>
 
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <label>Name:</label><br>
-    <input type="text" name="name"><br><br>
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
-    <label>Category:</label><br>
-    <input type="text" name="category"><br><br>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <label>Name:</label>
+        <input type="text" name="name" required>
 
-    <label>Description:</label><br>
-    <textarea name="description" rows="4"></textarea><br><br>
+        <label>Category:</label>
+        <input type="text" name="category" required>
 
-    <label>Price:</label><br>
-    <input type="number" step="0.01" name="price"><br><br>
+        <label>Description:</label>
+        <textarea name="description" rows="4" required></textarea>
 
-    <label>Stock Quantity:</label><br>
-    <input type="number" name="stock_quantity"><br><br>
+        <label>Price:</label>
+        <input type="number" step="0.01" name="price" required>
 
-    <label>Image:</label><br>
-    <input type="file" name="image" accept="image/*"><br><br>
+        <label>Stock Quantity:</label>
+        <input type="number" name="stock_quantity" required>
 
-    <button type="submit">Add Product</button>
-</form>
+        <label>Image:</label>
+        <input type="file" name="image" accept="image/*">
+
+        <button type="submit">Add Product</button>
+    </form>
+</div>
 {% endblock %}
