@@ -26,7 +26,7 @@ This project was built to simulate a real-world e-commerce environment, combinin
 
 ## 📊 Data Model / ERD
 
-![GlowHub ERD](media/README-media/ERD.png)
+![GlowHub ERD](media/readme/ERD.png)
 
 ---
 
@@ -57,13 +57,13 @@ This project was developed using several open-source libraries:
 ## 📸 Screenshots
 
 **Home Page**  
-![GlowHub Home](media/README-media/home.png)
+![GlowHub Home](media/readme/home.png)
 
 **Cart Page**  
-![GlowHub Cart](media/README-media/cart.png)
+![GlowHub Cart](media/readme/cart.png)
 
 **Admin Panel**  
-![GlowHub Dashboard](media/README-media/dashbhoard.png)
+![GlowHub Dashboard](media/readme/dashbhoard.png)
 
 ---
 
