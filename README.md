@@ -1,6 +1,5 @@
 # ✨ GlowHub
 
-![GlowHub Screenshot or Logo](/screenshot.png)
 
 ---
 
