@@ -84,3 +84,19 @@ This project was developed using several open-source libraries:
 - Implement payment gateway integration  
 - Add a “Favorites” list for users  
 - Enhance admin dashboard with analytics and charts
+
+## 🧠 Lessons Learned
+
+- Learned how to organize Django model relationships and create a clear ERD before coding.  
+- Gained experience connecting the frontend to the backend using Django 
+- Improved skills in designing responsive interfaces using CSS Grid and Flexbox.  
+- Learned how to handle image uploads and management with the Pillow library.  
+- Understood the importance of planning features ahead to ensure smooth database design and clear user interface.
+
+---
+
+## 🧑‍💻 Author
+
+- Name: [Tasnim Abdelhamid]   
+- GitHub: [GitHub Profile Link](https://github.com/tasnimjabdelhamid)  
+- LinkedIn: [LinkedIn Profile Link](www.linkedin.com/in/tasnimabdelhamid12)
