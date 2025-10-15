@@ -13,11 +13,12 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+load_dotenv(BASE_DIR / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -80,7 +81,7 @@ WSGI_APPLICATION = 'GlowHub.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'GlowHub',
+        'NAME': os.getenv('.env'),
         'USER': 'postgres',
         'PASSWORD': '789632145',
         'HOST': 'localhost',  
