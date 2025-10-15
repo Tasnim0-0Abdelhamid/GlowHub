@@ -131,7 +131,7 @@ MIDDLEWARE+= 'whitenoise.middleware.WhiteNoiseMiddleware',
 ALLOWED_HOSTS += ['.onrender.com','localhost','127.0.0.1']
 CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com']
 
-
+import dj_database_url
 
 
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -147,7 +147,7 @@ else:
     DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),  # same name as your .env file
+        'NAME': os.getenv('.env'),  # same name as your .env file
         'USER': 'postgres',
         'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': 'localhost',  
