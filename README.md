@@ -62,7 +62,7 @@ This project was developed using several open-source libraries:
 ![GlowHub Cart](media/readme/cart.png)
 
 **Admin Panel**  
-![GlowHub Dashboard](media/readme/dashbhoard.png)
+![GlowHub Dashboard](media/readme/dashboard.png)
 
 ---
 
