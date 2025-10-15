@@ -11,7 +11,7 @@
     <p><strong>Email:</strong> {{ user.email }}</p>
     <p><strong>Phone:</strong> {{ user.phone|default:"Not provided" }}</p>
 
-    <p><a href="{% url 'orders' %}">My Orders</a></p>
+    <p><a href="{% url 'orders' %}" class="second-link">My Orders</a></p>
 
     {% if not show_form %}
         <form method="POST">
@@ -42,18 +42,10 @@
         <form method="POST">
             {% csrf_token %}
             <button type="submit" name="delete_account">Yes, delete my account</button>
-        </form>
+        </form><br>
         <form method="GET" action="{% url 'profile' %}">
             <button type="submit">Cancel</button>
         </form>
-    {% endif %}
-
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
     {% endif %}
 </div>
 {% endblock %}

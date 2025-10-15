@@ -6,14 +6,6 @@
 <div class="signup-container">
     <h2>Sign Up</h2>
 
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
     <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}

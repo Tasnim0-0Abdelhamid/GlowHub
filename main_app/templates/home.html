@@ -34,11 +34,7 @@
                 {% csrf_token %}
                 <button type="submit" class="btn">Add to Cart</button>
             </form>
-
-            <div class="product-details">
-                <p>{{ product.description }}</p>
-                <p><strong>Category:</strong> {{ product.category }}</p>
-            </div>
+            
         </div>
     {% empty %}
         <p>No products available.</p>

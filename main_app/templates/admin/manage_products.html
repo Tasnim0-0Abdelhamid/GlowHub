@@ -30,7 +30,8 @@
                 <th>Category</th>
                 <th>Price</th>
                 <th>Stock</th>
-                <th>Actions</th>
+                <th>Edit</th>
+                <th>Delete</th>
             </tr>
         </thead>
         <tbody>
@@ -42,6 +43,8 @@
                 <td>{{ product.stock_quantity }}</td>
                 <td>
                     <a href="{% url 'edit_product' product.id %}" class="btn">Edit</a>
+                </td>
+                <td>
                     <a href="{% url 'delete_product' product.id %}" class="btn">Delete</a>
                 </td>
             </tr>
