@@ -100,26 +100,31 @@ This project was developed using several open-source libraries:
 ```bash
 git clone https://github.com/Tasnim0-0Abdelhamid/GlowHub.git
 cd GlowHub
-
+```
 2. ** Create & activate a virtual environment **
+```bash
 python -m venv venv
 # Windows
 venv\Scripts\activate
 # macOS / Linux
 source venv/bin/activate
-
+```
 3. **Install dependencies**
+```bash
 pip install -r requirements.txt
-
+```
 4. **Apply migrations**
+```bash
 python manage.py migrate
-
+```
 5. **Run the development server**
+```bash
 python manage.py runserver
-
+```
 6 **Visit in your browser**
+```bash
 http://127.0.0.1:8000/
-
+```
 ---
 ## 🧑‍💻 Author
 
