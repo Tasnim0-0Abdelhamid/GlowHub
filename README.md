@@ -98,4 +98,4 @@ This project was developed using several open-source libraries:
 ## 🧑‍💻 Author
 
 - Name: Tasnim Abdelhamid
-- GitHub: [GitHub Profile Link](https://github.com/tasnimjabdelhamid)
+- GitHub: [GitHub Profile Link](https://github.com/Tasnim0-0Abdelhamid))
