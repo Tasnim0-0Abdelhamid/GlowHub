@@ -149,7 +149,7 @@ else:
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('.env'),  # same name as your .env file
         'USER': 'postgres',
-        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'PASSWORD':'789632145',
         'HOST': 'localhost',  
         'PORT': '5432',
     }
