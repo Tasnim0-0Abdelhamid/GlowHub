@@ -94,7 +94,33 @@ This project was developed using several open-source libraries:
 - Understood the importance of planning features ahead to ensure smooth database design and clear user interface.
 
 ---
+## 🚀 Installation & Setup
 
+1. **Clone the repository:**
+```bash
+git clone https://github.com/Tasnim0-0Abdelhamid/GlowHub.git
+cd GlowHub
+
+2. ** Create & activate a virtual environment **
+python -m venv venv
+# Windows
+venv\Scripts\activate
+# macOS / Linux
+source venv/bin/activate
+
+3. **Install dependencies**
+pip install -r requirements.txt
+
+4. **Apply migrations**
+python manage.py migrate
+
+5. **Run the development server**
+python manage.py runserver
+
+6 **Visit in your browser**
+http://127.0.0.1:8000/
+
+---
 ## 🧑‍💻 Author
 
 - Name: Tasnim Abdelhamid
