@@ -55,13 +55,13 @@ This project was developed using several open-source libraries:
 
 ## 📸 Screenshots
 
-**Home Page**  
+🏠 **Home Page**  
 ![GlowHub Home](media/readme/home.png)
 
-**Cart Page**  
+🛒 **Cart Page**  
 ![GlowHub Cart](media/readme/cart.png)
 
-**Admin Panel**  
+📈 **Admin Panel**  
 ![GlowHub Dashboard](media/readme/dashboard.png)
 
 ---
